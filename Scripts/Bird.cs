@@ -13,20 +13,23 @@ public class Bird
 	private Rectangle collider;
 	private int width; 
 	private int height;
-	private int yAcceleration;
 	private int gravity;
-	private int jumpForce;
+	private int flapSrenght;
 	private double coolDownSeconds;
 	private double coolDownSecondsMax;
 	private double deltaTime;
 	private int deltaTimei;
 	private bool started;
 	
+	private int yVelocity;
+	
+	private Vector2 debugTestLocation;
+
 		
 	public Bird(GraphicsDeviceManager graphicsDeviceManager,GraphicsDevice graphicsDevice)
 	{
-		width = 50;
-		height = 50;
+		width = 30;
+		height = 30;
 		collider = new Rectangle (graphicsDeviceManager.PreferredBackBufferWidth / 4,
 									graphicsDeviceManager.PreferredBackBufferHeight / 2 - height,
 									width,
@@ -34,10 +37,13 @@ public class Bird
 		texture = new Texture2D(graphicsDevice,1,1);
 		texture.SetData<Color>([Color.White]);
 		gravity = 2;
-		yAcceleration = gravity;
-		jumpForce = 50;
-		coolDownSecondsMax = .3 ;
+		flapSrenght = 25;
+		coolDownSecondsMax = .2;
 		coolDownSeconds = coolDownSecondsMax;
+		yVelocity = 0;
+		
+		debugTestLocation = new Vector2(20,10);
+		
 		
 	}
 	
@@ -55,35 +61,55 @@ public class Bird
 		
 		if (keyboardState.IsKeyDown(Keys.Space) && coolDownSeconds <= 0)
 		{
-			yAcceleration -= jumpForce;
+			// collider.Y -= flapSrenght;
+			yVelocity = -flapSrenght;
+			// yVelocity -= flapSrenght;
 			coolDownSeconds = coolDownSecondsMax;
 			started = true;
 		}
 		
+		if (keyboardState.IsKeyDown(Keys.Right))
+		{
+			flapSrenght++;
+		}
+		else if (keyboardState.IsKeyDown(Keys.Left))
+		{
+			flapSrenght--;
+		}
+		if (keyboardState.IsKeyDown(Keys.Up))
+		{
+			gravity++;
+		}
+		else if (keyboardState.IsKeyDown(Keys.Down))
+		{
+			gravity--;
+		}
+		
 		if (!started) {return;}
 		
-		yAcceleration += gravity;
-		collider.Y += yAcceleration * deltaTimei * deltaTimei;
+		yVelocity += gravity * deltaTimei;
 		
-		// TODO: player should DIE, not just halt.
+		collider.Y += yVelocity * deltaTimei; 
+		
 		if (collider.Bottom > graphicsDeviceManager.PreferredBackBufferHeight)
 		{
 			collider.Y = graphicsDeviceManager.PreferredBackBufferHeight - collider.Height;
-			yAcceleration = 0;
+			yVelocity = 0;
 		}
 		
 		if (collider.Top < 0)
 		{
 			collider.Y = 0;
-			yAcceleration = 2;
+			yVelocity = 0;
 		}
 		
 		
-	}	
+	}
 		
-	public void Draw(SpriteBatch spriteBatch)
+	public void Draw(SpriteBatch spriteBatch, SpriteFont font)
 	{
-		spriteBatch.Draw(texture,collider,Color.White);	
+		spriteBatch.Draw(texture,collider,Color.White);
+		spriteBatch.DrawString(font,$"flap:{flapSrenght}\ngravity:{gravity}",debugTestLocation,Color.Black);
 	}
 	
 }

@@ -23,7 +23,7 @@ public class Pipe
 										bounds.Y,
 										bounds.Width,
 										// bounds.Height / 5);
-										20);
+										30);
 										
 			bodyCollider = new Rectangle(bounds.X + (topCollider.Width / 4),
 										bounds.Y + topCollider.Height,
@@ -34,10 +34,10 @@ public class Pipe
 		{
 			bounds = new Rectangle(x,y,width,height);
 			topCollider = new Rectangle(bounds.X, 
-										bounds.Bottom - 20,
+										bounds.Bottom - 30,
 										bounds.Width,
 										// bounds.Height / 5);
-										20);
+										30);
 										
 			bodyCollider = new Rectangle(bounds.X + (topCollider.Width / 4), 
 										bounds.Y,

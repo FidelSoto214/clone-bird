@@ -15,11 +15,15 @@ public class Game1 : Game
 	double pipeSpawnCoolDownInitValue;
 	double pipeSpawnCoolDown;
 	
+	SpriteFont debugFont;
+	
 	
 		
 	public Game1()
 	{
 		_graphics = new GraphicsDeviceManager(this);
+		_graphics.PreferredBackBufferWidth = GraphicsAdapter.DefaultAdapter.CurrentDisplayMode.Width / 4;
+		_graphics.PreferredBackBufferHeight = (int)(GraphicsAdapter.DefaultAdapter.CurrentDisplayMode.Height * .75);
 		Content.RootDirectory = "Content";
 		IsMouseVisible = true;
 	}
@@ -41,7 +45,7 @@ public class Game1 : Game
 	protected override void LoadContent()
 	{
 		_spriteBatch = new SpriteBatch(GraphicsDevice);
-
+		debugFont = Content.Load<SpriteFont>("InfoFont");
 		// TODO: use this.Content to load your game content here
 	}
 
@@ -79,7 +83,7 @@ public class Game1 : Game
 		{
 			obstacles[i].Draw(_spriteBatch);
 		}
-		bird.Draw(_spriteBatch);
+		bird.Draw(_spriteBatch, debugFont);
 		_spriteBatch.End();
 		base.Draw(gameTime);
 	}

@@ -22,7 +22,7 @@ public class PipeObstacle
 	
 	public PipeObstacle(GraphicsDeviceManager graphicsDeviceManager, GraphicsDevice graphicsDevice, int xSpawnLocation)
 	{
-		gapSpawnHeight = gapSpawnRandomizer.Next((int)(graphicsDeviceManager.PreferredBackBufferHeight * .10),
+		gapSpawnHeight = gapSpawnRandomizer.Next((int)(graphicsDeviceManager.PreferredBackBufferHeight * .20),
 													(int)(graphicsDeviceManager.PreferredBackBufferHeight * .40));
 													
 		gapSpawnY = gapSpawnRandomizer.Next((int)(graphicsDeviceManager.PreferredBackBufferHeight * .10),
