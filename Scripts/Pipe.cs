@@ -6,8 +6,8 @@ namespace CloneBird;
 public class Pipe
 {
 	private Rectangle bounds;
-	Rectangle topCollider; // top of pipe.
-	Rectangle bodyCollider; // body of pipe
+	public Rectangle topCollider; // top of pipe.
+	public Rectangle bodyCollider; // body of pipe
 	
 	Texture2D texture;
 	
@@ -59,8 +59,8 @@ public class Pipe
 		
 	public void Draw(SpriteBatch spriteBatch)
 	{
-		spriteBatch.Draw(texture,topCollider,Color.White);
-		spriteBatch.Draw(texture,bodyCollider,Color.Red);
+		spriteBatch.Draw(Game1.pipeTopTexture,topCollider,Color.White);
+		spriteBatch.Draw(Game1.pipeBodyTexture,bodyCollider,Color.White);
 	}
 	
 	

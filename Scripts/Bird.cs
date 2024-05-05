@@ -9,6 +9,9 @@ namespace CloneBird;
 
 public class Bird
 {
+	
+	public bool Dead {get; set;}
+	
 	private Texture2D texture;
 	private Rectangle collider;
 	private int width; 
@@ -22,14 +25,15 @@ public class Bird
 	private bool started;
 	
 	private int yVelocity;
+	private int Score;
 	
 	private Vector2 debugTestLocation;
 
 		
 	public Bird(GraphicsDeviceManager graphicsDeviceManager,GraphicsDevice graphicsDevice)
 	{
-		width = 30;
-		height = 30;
+		width = 40;
+		height = 40;
 		collider = new Rectangle (graphicsDeviceManager.PreferredBackBufferWidth / 4,
 									graphicsDeviceManager.PreferredBackBufferHeight / 2 - height,
 									width,
@@ -41,9 +45,11 @@ public class Bird
 		coolDownSecondsMax = .2;
 		coolDownSeconds = coolDownSecondsMax;
 		yVelocity = 0;
+		Score = 0;
 		
 		debugTestLocation = new Vector2(20,10);
 		
+		Dead = false;
 		
 	}
 	
@@ -59,37 +65,56 @@ public class Bird
 			coolDownSeconds -= deltaTime;
 		}
 		
-		if (keyboardState.IsKeyDown(Keys.Space) && coolDownSeconds <= 0)
+		if (!Dead)
 		{
-			// collider.Y -= flapSrenght;
-			yVelocity = -flapSrenght;
-			// yVelocity -= flapSrenght;
-			coolDownSeconds = coolDownSecondsMax;
-			started = true;
-		}
-		
-		if (keyboardState.IsKeyDown(Keys.Right))
-		{
-			flapSrenght++;
-		}
-		else if (keyboardState.IsKeyDown(Keys.Left))
-		{
-			flapSrenght--;
-		}
-		if (keyboardState.IsKeyDown(Keys.Up))
-		{
-			gravity++;
-		}
-		else if (keyboardState.IsKeyDown(Keys.Down))
-		{
-			gravity--;
+			if (keyboardState.IsKeyDown(Keys.Space) && coolDownSeconds <= 0)
+			{
+				// collider.Y -= flapSrenght;
+				yVelocity = -flapSrenght;
+				// yVelocity -= flapSrenght;
+				coolDownSeconds = coolDownSecondsMax;
+				started = true;
+			}
+			
+			if (keyboardState.IsKeyDown(Keys.Right))
+			{
+				flapSrenght++;
+			}
+			else if (keyboardState.IsKeyDown(Keys.Left))
+			{
+				flapSrenght--;
+			}
+			if (keyboardState.IsKeyDown(Keys.Up))
+			{
+				gravity++;
+			}
+			else if (keyboardState.IsKeyDown(Keys.Down))
+			{
+				gravity--;
+			}
 		}
 		
 		if (!started) {return;}
 		
 		yVelocity += gravity * deltaTimei;
 		
-		collider.Y += yVelocity * deltaTimei; 
+		collider.Y += yVelocity * deltaTimei;
+		
+		if (!Dead && 
+			(collider.Intersects(Game1.obstacles[0].bottomPipe.bodyCollider) ||
+			collider.Intersects(Game1.obstacles[0].bottomPipe.topCollider) ||
+			collider.Intersects(Game1.obstacles[0].topPipe.bodyCollider) ||
+			collider.Intersects(Game1.obstacles[0].topPipe.topCollider))
+			)
+			{
+				Dead = true;
+			}
+		
+		if (!Dead && collider.Intersects(Game1.obstacles[0].gap) && !Game1.obstacles[0].gapCollided && !Dead)
+		{
+			Game1.obstacles[0].gapCollided = true;
+			Score++;
+		}
 		
 		if (collider.Bottom > graphicsDeviceManager.PreferredBackBufferHeight)
 		{
@@ -108,8 +133,8 @@ public class Bird
 		
 	public void Draw(SpriteBatch spriteBatch, SpriteFont font)
 	{
-		spriteBatch.Draw(texture,collider,Color.White);
-		spriteBatch.DrawString(font,$"flap:{flapSrenght}\ngravity:{gravity}",debugTestLocation,Color.Black);
+		spriteBatch.Draw(Game1.birdTexture,collider,Color.White);
+		spriteBatch.DrawString(font,$"flap:{flapSrenght}\ngravity:{gravity}\nScore:{Score}\nDead:{Dead}",debugTestLocation,Color.Black);
 	}
 	
 }

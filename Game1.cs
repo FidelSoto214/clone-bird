@@ -11,7 +11,10 @@ public class Game1 : Game
 	GraphicsDeviceManager _graphics;
 	SpriteBatch _spriteBatch;
 	Bird bird;
-	List<PipeObstacle> obstacles;
+	public static List<PipeObstacle> obstacles;
+	public static Texture2D pipeTopTexture;
+	public static Texture2D pipeBodyTexture;
+	public static Texture2D birdTexture;
 	double pipeSpawnCoolDownInitValue;
 	double pipeSpawnCoolDown;
 	
@@ -46,6 +49,9 @@ public class Game1 : Game
 	{
 		_spriteBatch = new SpriteBatch(GraphicsDevice);
 		debugFont = Content.Load<SpriteFont>("InfoFont");
+		pipeTopTexture = Content.Load<Texture2D>("Exports/TopCollider");
+		pipeBodyTexture = Content.Load<Texture2D>("Exports/BodyCollider");
+		birdTexture = Content.Load<Texture2D>("Exports/Bird");
 		// TODO: use this.Content to load your game content here
 	}
 
@@ -53,21 +59,29 @@ public class Game1 : Game
 	{
 		if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.Escape))
 			Exit();
+		
+		if (Keyboard.GetState().IsKeyDown(Keys.R))
+		{
+			Reset();
+		}
 
 		// TODO: Add your update logic here
-		pipeSpawnCoolDown -= gameTime.ElapsedGameTime.TotalSeconds;
-		if (pipeSpawnCoolDown < 0)
+		if(!bird.Dead)
 		{
-			pipeSpawnCoolDown = pipeSpawnCoolDownInitValue;
-			obstacles.Add(new(_graphics,GraphicsDevice, _graphics.PreferredBackBufferWidth));
-		}
-		for(int i = obstacles.Count - 1; i >= 0; i--)
-		{
-			obstacles[i].Update(gameTime);
-			if (obstacles[i].KillMe)
+			pipeSpawnCoolDown -= gameTime.ElapsedGameTime.TotalSeconds;
+			if (pipeSpawnCoolDown < 0)
 			{
-				obstacles.RemoveAt(i);
-				Debug.WriteLine("[obstacles]: Removed obstacle.");
+				pipeSpawnCoolDown = pipeSpawnCoolDownInitValue;
+				obstacles.Add(new(_graphics,GraphicsDevice, _graphics.PreferredBackBufferWidth));
+			}
+			for(int i = obstacles.Count - 1; i >= 0; i--)
+			{
+				obstacles[i].Update(gameTime);
+				if (obstacles[i].KillMe)
+				{
+					obstacles.RemoveAt(i);
+					Debug.WriteLine("[obstacles]: Removed obstacle.");
+				}
 			}
 		}
 		bird.Update(Keyboard.GetState(),gameTime,_graphics);
@@ -86,5 +100,16 @@ public class Game1 : Game
 		bird.Draw(_spriteBatch, debugFont);
 		_spriteBatch.End();
 		base.Draw(gameTime);
+	}
+	
+	void Reset()
+	{
+		bird = new Bird(_graphics,GraphicsDevice);
+		obstacles = new List<PipeObstacle>()
+		{
+			new(_graphics,GraphicsDevice, _graphics.PreferredBackBufferWidth - 20)
+		};
+		pipeSpawnCoolDownInitValue = 1.5;
+		pipeSpawnCoolDown = pipeSpawnCoolDownInitValue;	
 	}
 }

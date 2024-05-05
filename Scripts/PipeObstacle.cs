@@ -10,11 +10,13 @@ namespace CloneBird;
 public class PipeObstacle
 {
 	static readonly Random gapSpawnRandomizer = new(Guid.NewGuid().GetHashCode());
-	Pipe topPipe;
-	Pipe bottomPipe;
-	Rectangle gap;
+	public Pipe topPipe;
+	public Pipe bottomPipe;
+	public Rectangle gap;
+	public bool gapCollided;
 	int gapSpawnY;
 	int gapSpawnHeight;
+	private int obstacleWidth = 100;
 	Texture2D gapTexture;
 	
 	Rectangle obstacleContainer;
@@ -32,24 +34,25 @@ public class PipeObstacle
 
 		gap = new Rectangle(xSpawnLocation
 							,gapSpawnY
-							,100
+							,obstacleWidth
 							,gapSpawnHeight);
+		gapCollided = false;
 							
 		obstacleContainer = new Rectangle(gap.X,
 											0, 
-											100,
+											obstacleWidth,
 											graphicsDeviceManager.PreferredBackBufferHeight);
 											
 		bottomPipe = new Pipe(gap.X,
 								gap.Bottom,
-								100, 
+								obstacleContainer.Width, 
 								graphicsDeviceManager.PreferredBackBufferHeight - gap.Bottom,
 								true,
 								graphicsDevice);
 								
 		topPipe = new Pipe(gap.X,
 							0,
-							100,
+							obstacleContainer.Width,
 							gap.Top,
 							false,
 							graphicsDevice);
@@ -68,7 +71,7 @@ public class PipeObstacle
 		}
 		
 		obstacleContainer.X -= 3 * (int)Math.Ceiling(gameTime.ElapsedGameTime.TotalSeconds);
-		// gap.X -= 2 * (int)Math.Ceiling(gameTime.ElapsedGameTime.TotalSeconds);
+		gap.X = obstacleContainer.X; 
 		bottomPipe.Update(obstacleContainer.X);
 		topPipe.Update(obstacleContainer.X);
 	}
@@ -77,6 +80,6 @@ public class PipeObstacle
 	{
 		bottomPipe.Draw(spriteBatch);
 		topPipe.Draw(spriteBatch);
-		// spriteBatch.Draw(gapTexture,gap,Color.Red);
+		// spriteBatch.Draw(gapTexture,gap,Color.Goldenrod);
 	}
 }
